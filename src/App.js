@@ -1,12 +1,43 @@
 import "./App.css";
 import React, { useState, useRef } from "react";
 
+function isPalindrome(input) {
+  const charCount = new Map();
+  // create an empty map to store character count
+  for (let char of input) {
+    // iterate over each character
+    if (charCount.has(char)) {
+      // if the character already exists in the charCount map
+      charCount.set(char, charCount.get(char) + 1);
+      // increment its count by 1
+    } else {
+      // if the character doesnt exist in the charCount map
+      charCount.set(char, 1);
+      // set its count to 1
+    }
+  }
+
+  let oddCharCount = 0;
+
+  for (let count of charCount.values()) {
+    // iterate over the values of the charCount map
+    if (count % 2 !== 0) {
+      //if the count of a character is not divisible by 2
+      oddCharCount++;
+      // increment oddCharCount by 1
+    }
+  }
+
+  return oddCharCount <= 1;
+  // check if oddCharCount is less than or equal to 1
+  // return true if so, indicating a palindrome or palindrome when rearranged
+  // return false if it's not indicating the input is not and cannot be a palindrome
+}
+
 function App() {
-  // Set up state to hold input and palindromes found
   const [input, setInput] = useState("");
   const [palindromes, setPalindromes] = useState([]);
 
-  // Set up a reference to the input field
   const inputRef = useRef();
 
   const handleInput = (event) => {
@@ -19,22 +50,15 @@ function App() {
   };
 
   const handleSearch = () => {
-    // Split the input into individual words and make them lowercase
-    const words = input.toLowerCase().split(" ");
+    const words = input.split(" ");
+    // split the input into individual words
 
-    // Filter the words to find any palindromes
-    const foundPalindromes = words.filter((word) => {
-      // Reverse each word and compare to the original to check if it's a palindrome
-      const reversedWord = word.split("").reverse().join("");
-      return word === reversedWord;
-    });
+    const foundPalindromes = words.filter((word) => isPalindrome(word));
+    // filter the words to find any palindromes
 
-    // Update state with the palindromes found
     setPalindromes(foundPalindromes);
+    // update state with the palindromes found
   };
-
-  // Render the input field, clear button, search button, and any palindromes found
-
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 rounded-lg shadow-md p-6 w-96">
@@ -58,12 +82,10 @@ function App() {
         </button>
         {palindromes.length > 0 && (
           <div>
-            <h3>Palindromes found:</h3>
+            <h3>Palindromes detected:</h3>
             <ul>
               {palindromes.map((palindrome, index) => (
-                <h3>
-                  <li key={index}>{palindrome}</li>
-                </h3>
+                <li key={index}>{palindrome}</li>
               ))}
             </ul>
           </div>
